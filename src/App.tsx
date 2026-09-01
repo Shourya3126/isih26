@@ -18,6 +18,7 @@ import { SettingsPage } from './pages/SettingsPage';
 
 export function App() {
   const [activeTab, setActiveTab] = useState<string>('landing');
+  const [currentJobId, setCurrentJobId] = useState<string | null>(null);
 
   // If on public portal / landing page, render standalone view
   if (activeTab === 'landing') {
@@ -34,9 +35,21 @@ export function App() {
       case 'dashboard':
         return <DashboardPage onNavigate={(tab) => setActiveTab(tab)} />;
       case 'collect':
-        return <CollectionSetupPage onStartCollection={() => setActiveTab('status')} />;
+        return (
+          <CollectionSetupPage
+            onStartCollection={(jobId?: string) => {
+              if (jobId) setCurrentJobId(jobId);
+              setActiveTab('status');
+            }}
+          />
+        );
       case 'status':
-        return <CollectionStatusPage onProceedToDashboard={() => setActiveTab('dashboard')} />;
+        return (
+          <CollectionStatusPage
+            jobId={currentJobId}
+            onProceedToDashboard={() => setActiveTab('dashboard')}
+          />
+        );
       case 'sentiment':
         return <SentimentPage />;
       case 'audience':
